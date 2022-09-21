@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useTodo } from "./hook/todo"
+
+const TodoItem = ({ todo, toggleStatusTodoList }) => {
+
+  const handleToggle = () => toggleStatusTodoList(todo.id, todo.done)
+
+  return (
+    <li key={todo.id}>
+      {todo.content}
+      <button onClick={handleToggle}>
+        {todo.done ? "未完了リストへ":"完了リストへ"}
+      </button>
+      <button>削除</button>
+    </li>
+  )
+}
+
+const TodoList = ({ todoList, toggleStatusTodoList }) => {
+  return (
+    <ul>
+      {todoList.map((todo) => <TodoItem todo={todo} key={todo.id} toggleStatusTodoList={toggleStatusTodoList} />)}
+    </ul>
+  ) 
+}
 
 function App() {
+  const {todoList, toggleStatusTodoList} = useTodo();
+  
+  const doneList = todoList.filter(todo => todo.done)
+  const undoList = todoList.filter(todo => !todo.done)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <textarea />
+
+      <button>+TODO追加</button>
+
+      <h2>完了TODOリスト</h2>
+      <TodoList todoList={doneList} toggleStatusTodoList={toggleStatusTodoList} />
+
+      <h2>未完了TODOリスト</h2>
+      <TodoList todoList={undoList} toggleStatusTodoList={toggleStatusTodoList} />
+    </>
   );
 }
 
